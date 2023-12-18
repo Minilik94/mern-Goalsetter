@@ -1,7 +1,7 @@
 # README
 
 <div align="center">
-  <img src="https://example.com/path/to/your/logo.png" alt="Logo" width="200" height="200">
+  Goal Setter
 </div>
 
 <p align="center">
