@@ -1,7 +1,7 @@
-const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
-const User = require("../models/userModel")
-const asyncHandler = require("express-async-handler")
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const User = require('../models/userModel')
+const asyncHandler = require('express-async-handler')
 
 // Register a new user
 
@@ -9,7 +9,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body
 
   if (!name || !email || !password) {
-    const error = new Error("Please add all fields")
+    const error = new Error('Please add all fields')
     error.status = 400
     return next(error)
   }
@@ -17,7 +17,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
   const userExists = await User.findOne({ email })
 
   if (userExists) {
-    const error = new Error("User already exist")
+    const error = new Error('User already exist')
     error.status = 400
     return next(error)
   }
@@ -39,7 +39,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
       token: generateToken(user._id),
     })
   } else {
-    const error = new Error("Invalid user data")
+    const error = new Error('Invalid user data')
     error.status = 400
     return next(error)
   }
@@ -60,7 +60,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
       token: generateToken(user._id),
     })
   } else {
-    const error = new Error("Invalid Credentials")
+    const error = new Error('Invalid Credentials')
     error.status = 400
     return next(error)
   }
@@ -73,7 +73,7 @@ const getMe = asyncHandler(async (req, res, next) => {
 
   const user = await User.findById(_id)
   if (!user) {
-    const error = new Error("User not Found")
+    const error = new Error('User not Found')
     error.status = 404
     return next(error)
   }
@@ -87,7 +87,7 @@ const getMe = asyncHandler(async (req, res, next) => {
 // GENERATE JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
+    expiresIn: '30d',
   })
 }
 
