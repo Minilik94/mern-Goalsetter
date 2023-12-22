@@ -1,123 +1,62 @@
-import { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import { FaUser } from 'react-icons/fa'
-import { register, reset } from '../features/auth/authSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import GoalForm from '../components/GoalForm'
+import GoalItem from '../components/GoaItem'
 import Spinner from '../components/Spinner'
+import { getGoals, reset } from '../features/goals/goalSlice'
 
-function Register() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    password2: '',
-  })
-
-  const { name, email, password, password2 } = formData
-
+function Dashboard() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
+  const { user } = useSelector((state) => state.auth)
+  const { goals, isLoading, isError, message } = useSelector(
+    (state) => state.goals
   )
 
   useEffect(() => {
     if (isError) {
-      toast.error(message)
+      console.log(message)
     }
 
-    if (isSuccess || user) {
-      navigate('/')
+    if (!user) {
+      navigate('/login')
     }
 
-    dispatch(reset())
-  }, [user, isError, isSuccess, message, navigate, dispatch])
+    dispatch(getGoals())
 
-  const onChange = (e) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }))
+    return () => {
+      dispatch(reset())
+    }
+  }, [user, navigate, isError, message, dispatch])
+
+  if (isLoading) {
+    return <Spinner />
   }
-
-  const onSubmit = (e) => {
-    e.preventDefault()
-    if (password !== password2) {
-      toast.error('Passwords do not match')
-    } else {
-      const userData = {
-        name,
-        email,
-        password,
-      }
-      dispatch(register(userData))
-    }
-  }
-
-  if (isLoading) return <Spinner />
 
   return (
     <>
-      <section className="heading">
-        <h1>
-          <FaUser /> Register
-        </h1>
-        <p>Please create an account</p>
+      <section className='heading'>
+        <h1>Welcome {user && user.name}</h1>
+        <p>Goals Dashboard</p>
       </section>
-      <section className="form">
-        <form onSubmit={onSubmit}>
-          <div className="form-group">
-            <input
-              type="text"
-              className="form-control"
-              name="name"
-              value={name}
-              placeholder="Enter your name"
-              onChange={onChange}
-            />
-          </div>
-          <div className="form-group">
-            <input
-              type="email"
-              className="form-control"
-              name="email"
-              value={email}
-              placeholder="Enter your email"
-              onChange={onChange}
-            />
-          </div>
 
-          <div className="form-group">
-            <input
-              type="password"
-              className="form-control"
-              name="password"
-              value={password}
-              placeholder="Enter your password"
-              onChange={onChange}
-            />
+      <GoalForm />
+
+      <section className='content'>
+        {goals.length > 0 ? (
+          <div className='goals'>
+            {goals.map((goal) => (
+              <GoalItem key={goal._id} goal={goal} />
+            ))}
           </div>
-          <div className="form-group">
-            <input
-              type="password"
-              className="form-control"
-              name="password2"
-              value={password2}
-              placeholder="Enter confirm your password"
-              onChange={onChange}
-            />
-          </div>
-          <div className="form-group">
-            <button type="submit" className="btn btn-block">
-              Submit
-            </button>
-          </div>
-        </form>
+        ) : (
+          <h3>You have not set any goals</h3>
+        )}
       </section>
     </>
   )
 }
 
-export default Register
+export default Dashboard
