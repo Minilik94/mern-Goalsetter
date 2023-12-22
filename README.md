@@ -4,7 +4,6 @@
 
 - **User Authentication:** Create an account and log in securely to access the application's features.
 - **Goal Management:** Create, track, edit, and delete goals effortlessly.
-- **User Profile:** Manage your profile information, including name, email, and profile picture.
 - **Responsive Design:** Enjoy a seamless experience on various devices.
 
 ## Installation
